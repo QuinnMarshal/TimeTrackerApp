@@ -8,6 +8,8 @@ import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { TimeEntryContext } from './TimeEntryContext';
+import { useContext } from 'react';
 // import { Link } from 'react-router-dom';
 
 // axois configuration
@@ -37,6 +39,26 @@ function App() {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [project, setProject] = useState('');
+  const [hours, setHours] = useState('');
+  const [description, setDescription] = useState('');
+
+  // TimeEntry context
+  const { timeEntries, setTimeEntries } = useContext(TimeEntryContext);
+
+  // project static data
+  const projects = [
+    { id: 1, name: 'QuantumPulse' },
+    { id: 2, name: 'StellarSync' },
+    { id: 3, name: 'NebulaNexus' },
+    { id: 4, name: 'CosmicCircuit' },
+    { id: 5, name: 'GalaxyGrid' },
+    { id: 6, name: 'LunarLink' },
+    { id: 7, name: 'SolarSprint' },
+    { id: 8, name: 'OrionOutlook' },
+    { id: 9, name: 'AstroPulse' },
+    { id: 10, name: 'NovaNetwork' },
+  ];
 
   // useEffect hook to check if the user is logged in
   useEffect(() => {
@@ -158,6 +180,46 @@ function App() {
   function update_form_btn() {
     setRegistrationToggle(!registrationToggle);
   }
+
+  // Function to create a new TimeEntry
+  // This function will send a POST request to the TimeEntry endpoint to create a new TimeEntry
+  function createTimeEntry(timeEntryData) {
+    const token = localStorage.getItem('token');
+    const csrftoken = getCookie('csrftoken');  // Get CSRF token from cookie
+    client.post('/accounts/timeentry/', timeEntryData, {
+      headers: {
+        Authorization: `Token ${token}`,
+        'X-CSRFToken': csrftoken
+      }
+    }).then(function (res) {
+      // Handle successful creation of TimeEntry here
+      console.log(res.data);
+      alert('Time entry created successfully!');
+    }).catch(function (error) {
+      // Handle error in TimeEntry creation here
+      console.error(error);
+      alert('An error occurred while creating the time entry. Please try again.');
+    });
+  }
+
+  function submitTimeEntry(e) {
+    e.preventDefault();
+
+    const projectName = projects.find(p => p.id === Number(project))?.name;
+
+    const timeEntryData = {
+      project: project,
+      hours_worked: hours,
+      description: description,
+      entry_timestamp: new Date().toISOString(),  // Current timestamp
+    };
+    createTimeEntry(timeEntryData);
+    const newTimeEntries = [...(timeEntries || []), { project: projectName, hours_worked: hours, entry_timestamp: timeEntryData.entry_timestamp }];
+    setTimeEntries(newTimeEntries);
+
+    // Save to localStorage
+    localStorage.setItem('timeEntries', JSON.stringify(newTimeEntries));
+  };
 
   // If the user is logged in, display the logged in page
 
