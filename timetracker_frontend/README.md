@@ -1,6 +1,25 @@
-# Getting Started with Create React App
+# Frontend Setup for TimeTrackerApp
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Description
+
+This is the frontend setup for TimeTrackerApp. It is built with React framework.
+
+## Prerequisites
+
+Before you begin, ensure you have met the following requirements:
+
+* You have installed the latest version of Node.
+* You have a Windows/Linux/Mac machine. State which OS is supported/required.
+
+## Installation
+
+To install the project, follow these steps:
+
+ Install the project dependencies:
+
+```bash
+npm install
+```
 
 ## Available Scripts
 
