@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.utils import timezone
 
 # AppUserManager and AppUser classes are created to override the default User model of Django
 # AppUserManager class is created to manage the creation of users
@@ -34,3 +35,16 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
     
     def __str__(self):
         return self.username
+    
+# TimeEntry class is created to store the time entry data
+# This is for users to enter the time they have worked on a project
+class TimeEntry(models.Model):
+    time_entry_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
+    project = models.IntegerField()
+    hours_worked = models.DecimalField(max_digits=5, decimal_places=2)
+    description = models.TextField()
+    entry_timestamp = models.DateTimeField(default=timezone.now)  # timestamp of when the entry was made
+    
+    def __str__(self):
+        return self.description
