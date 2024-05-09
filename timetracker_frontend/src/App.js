@@ -8,6 +8,9 @@ import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import Dropdown from 'react-bootstrap/Dropdown';
 import { TimeEntryContext } from './TimeEntryContext';
 import { useContext } from 'react';
 // import { Link } from 'react-router-dom';
@@ -42,6 +45,7 @@ function App() {
   const [project, setProject] = useState('');
   const [hours, setHours] = useState('');
   const [description, setDescription] = useState('');
+  const [formValid, setFormValid] = useState(false);
 
   // TimeEntry context
   const { timeEntries, setTimeEntries } = useContext(TimeEntryContext);
@@ -72,6 +76,12 @@ function App() {
       })
     }
   }, []);
+
+  // useEffect hook to check if the form is valid
+  useEffect(() => {
+    const hoursNumber = Number(hours);
+    setFormValid(!isNaN(hoursNumber) && hoursNumber > 0 && project);
+  }, [hours, project]);
 
   // Function to submit the registration form
   // This function will send a POST request to the registration endpoint to create a new user
@@ -148,11 +158,11 @@ function App() {
       }
     }).then(function (res) {
       if (res.data) {
-      localStorage.setItem('token', res.data.token);
-      setCurrentUser(true);
-    }else{
-      alert('Invalid credentials');
-    }
+        localStorage.setItem('token', res.data.token);
+        setCurrentUser(true);
+      } else {
+        alert('Invalid credentials');
+      }
     }).catch(function (error) {
       alert('Invalid credentials');
     })
@@ -202,6 +212,8 @@ function App() {
     });
   }
 
+  // Function to submit the time entry form
+  // This function uses createTimeEntry to create a new TimeEntry
   function submitTimeEntry(e) {
     e.preventDefault();
 
@@ -223,11 +235,11 @@ function App() {
 
   // If the user is logged in, display the logged in page
 
-/*            <Navbar.Text style={{ padding: '1rem' }}>
-                <Link to="/weekly-report" className="btn btn-dark">Weekly Report</Link> 
-              </Navbar.Text>
-*/
-  
+  /*            <Navbar.Text style={{ padding: '1rem' }}>
+                  <Link to="/weekly-report" className="btn btn-dark">Weekly Report</Link> 
+                </Navbar.Text>
+  */
+
   if (currentUser) {
     return (
       <div>
@@ -245,7 +257,48 @@ function App() {
           </Container>
         </Navbar>
         <div className="center">
-          <h2>You're logged in!</h2>
+          <Form onSubmit={submitTimeEntry}>
+            <Row className="align-items-center">
+              <Col xs="auto">
+                <Form.Label htmlFor="inlineFormInput" visuallyHidden>
+                  Hours
+                </Form.Label>
+                <Form.Control
+                  className="mb-2"
+                  id="inlineFormInput"
+                  placeholder="Hours Worked"
+                  value={hours}
+                  onChange={e => setHours(e.target.value)}
+                />
+              </Col>
+              <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                <Form.Label>Enter Task Description</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  value={description}
+                  onChange={e => setDescription(e.target.value)}
+                />
+              </Form.Group>
+              <Dropdown onSelect={setProject}>
+                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                  {projects.find(p => p.id === Number(project))?.name || "Select Project"}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {projects.map((project, index) => (
+                    <Dropdown.Item eventKey={project.id} key={index}>
+                      {project.name}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+              <Col xs="auto" style={{ padding: '1rem', dataBsTheme: 'dark' }}>
+                <Button type="submit" className="mb-2" disabled={!formValid}>
+                  Submit
+                </Button>
+              </Col>
+            </Row>
+          </Form>
         </div>
       </div>
     );
