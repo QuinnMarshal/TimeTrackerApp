@@ -195,7 +195,7 @@ function App() {
   // This function will send a POST request to the TimeEntry endpoint to create a new TimeEntry
   function createTimeEntry(timeEntryData) {
     const token = localStorage.getItem('token');
-    const csrftoken = getCookie('csrftoken'); 
+    const csrftoken = getCookie('csrftoken');
     client.post('/accounts/timeentry/', timeEntryData, {
       headers: {
         Authorization: `Token ${token}`,
@@ -221,37 +221,17 @@ function App() {
       project: project,
       hours_worked: hours,
       description: description,
-      entry_timestamp: new Date().toISOString(), 
+      entry_timestamp: new Date().toISOString(),
     };
     createTimeEntry(timeEntryData);
-    const newTimeEntries = [...(timeEntries || []), { project: projectName, hours_worked: hours, entry_timestamp: timeEntryData.entry_timestamp }];
+    const newTimeEntries = Array.isArray(timeEntries)
+      ? [...timeEntries, { project: projectName, hours_worked: hours, entry_timestamp: timeEntryData.entry_timestamp }]
+      : [{ project: projectName, hours_worked: hours, entry_timestamp: timeEntryData.entry_timestamp }];
     setTimeEntries(newTimeEntries);
 
     // Save to localStorage
     localStorage.setItem('timeEntries', JSON.stringify(newTimeEntries));
   };
-
-  // useEffect hook to fetch the time entries 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    const csrftoken = getCookie('csrftoken'); 
-  
-    client.get('/accounts/timeentry/', {
-      headers: {
-        Authorization: `Token ${token}`,
-        'X-CSRFToken': csrftoken
-      }
-    }).then(function (res) {
-      console.log(res.data);
-      setTimeEntries(res.data);
-    }).catch(function (error) {
-      console.error(error);
-      alert('An error occurred while fetching the time entries. Please try again.');
-    });
-      // since we are using the useEffect hook to fetch the time entries, 
-      // we can disable the eslint warning for the next line
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   // If the user is logged in, display the logged in page
   if (currentUser) {

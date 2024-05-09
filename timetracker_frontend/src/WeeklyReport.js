@@ -60,7 +60,6 @@ function WeeklyReport() {
     // when the timeEntries or lastProcessedIndex change
     useEffect(() => {
         const { newEntries, newHours, newLastProcessedIndex } = calculateNewState(timeEntries, lastProcessedIndex, projectEntries, projectHours);
-
         if (Array.isArray(timeEntries)) {
         setProjectEntries(newEntries);
         setProjectHours(newHours);

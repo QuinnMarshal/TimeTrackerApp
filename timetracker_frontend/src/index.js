@@ -8,10 +8,10 @@ import { TimeEntryContext } from './TimeEntryContext';
 import { useState } from 'react';
 import WeeklyReport from './WeeklyReport';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
 
-function Main() {
+const Main = React.memo(function Main() {
 
+  console.log('Main rendered');
   const [timeEntries, setTimeEntries] = useState([]);
 
   return (
@@ -26,9 +26,11 @@ function Main() {
       </Router>
     </React.StrictMode>
   );
-}
+});
 
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<Main />);
+
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
