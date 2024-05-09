@@ -61,10 +61,11 @@ function WeeklyReport() {
     useEffect(() => {
         const { newEntries, newHours, newLastProcessedIndex } = calculateNewState(timeEntries, lastProcessedIndex, projectEntries, projectHours);
 
+        if (Array.isArray(timeEntries)) {
         setProjectEntries(newEntries);
         setProjectHours(newHours);
         setLastProcessedIndex(newLastProcessedIndex);
-
+        }
         // we can disable the eslint warning for the next line because we want to update the state
         // and not projjectEntries or projectHours
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -83,16 +84,18 @@ function WeeklyReport() {
 
     // Group the time entries by project
     // This will allow us to display the time entries by project
-    const groupedEntries = timeEntries.reduce((grouped, entry) => {
-        const key = entry.project;
-        if (grouped[key]) {
-            grouped[key].push(entry);
-        } else {
-            grouped[key] = [entry];
-        }
-        return grouped;
-    }, {});
-
+    let groupedEntries = {};
+    if (Array.isArray(timeEntries)) {
+        groupedEntries = timeEntries.reduce((grouped, entry) => {
+            const key = entry.project;
+            if (grouped[key]) {
+                grouped[key].push(entry);
+            } else {
+                grouped[key] = [entry];
+            }
+            return grouped;
+        }, {});
+    }
     return (
         <div>
             <Navbar bg="dark" data-bs-theme="dark">
