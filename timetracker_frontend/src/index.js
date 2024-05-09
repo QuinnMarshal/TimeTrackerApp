@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { TimeEntryContext } from './TimeEntryContext';
 import { useState } from 'react';
+import WeeklyReport from './WeeklyReport';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -18,6 +19,7 @@ function Main() {
       <Router>
         <TimeEntryContext.Provider value={{ timeEntries, setTimeEntries }}>
           <Routes>
+            <Route path="/weekly-report" element={<WeeklyReport />} />
             <Route path="/" element={<App />} />
           </Routes>
         </TimeEntryContext.Provider>
