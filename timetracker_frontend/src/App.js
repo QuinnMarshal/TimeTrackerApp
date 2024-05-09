@@ -234,12 +234,6 @@ function App() {
   };
 
   // If the user is logged in, display the logged in page
-
-  /*            <Navbar.Text style={{ padding: '1rem' }}>
-                  <Link to="/weekly-report" className="btn btn-dark">Weekly Report</Link> 
-                </Navbar.Text>
-  */
-
   if (currentUser) {
     return (
       <div>
