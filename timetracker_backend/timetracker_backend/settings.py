@@ -78,7 +78,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "timetracker_backend.wsgi.application"
 
 # User model
-AUTH_USER_MODEL = "timetrackerapi.AppUser"
+AUTH_USER_MODEL = "timetracker_api.AppUser"
 
 # Password hashing
 REST_FRAMEWORK = {
