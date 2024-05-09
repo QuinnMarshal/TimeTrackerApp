@@ -1,4 +1,4 @@
-import { Navbar, Container } from 'react-bootstrap';
+import { Navbar, Container, Row, Card, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useContext, useState, useCallback } from 'react';
 import { TimeEntryContext } from './TimeEntryContext';
@@ -36,7 +36,7 @@ function WeeklyReport() {
 
         for (let i = newLastProcessedIndex; i < timeEntries.length; i++) {
             const entry = timeEntries[i];
-            const key = entry.project; 
+            const key = entry.project;
 
             if (newEntries[key]) {
                 newEntries[key].push({ hours_worked: Number(entry.hours_worked), entry_timestamp: entry.entry_timestamp });
@@ -106,6 +106,46 @@ function WeeklyReport() {
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
+            <Container className="center">
+                <Row className="mb-4">
+                    <Col style={{ padding: '5rem' }}>
+                        <h1>Weekly Entries</h1>
+                        {Object.entries(groupedEntries).map(([key, entries], index) => {
+                            const [project] = key.split('-');
+                            return (
+                                <Card key={index} className="mb-3">
+                                    <Card.Header as="h2">Project: {project}</Card.Header>
+                                    <Card.Body>
+                                        {entries.map((entry, i) => (
+                                            <Card.Text key={i}>
+                                                Hours Worked: {entry.hours_worked}
+                                                <br />
+                                                Time: {new Date(entry.entry_timestamp).toLocaleString()}
+                                            </Card.Text>
+                                        ))}
+                                    </Card.Body>
+                                </Card>
+                            );
+                        })}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <h1>Total Weekly Hours</h1>
+                        {Object.entries(groupedEntries).map(([key, entries], index) => {
+                            const totalHours = entries.reduce((sum, entry) => sum + Number(entry.hours_worked), 0);
+                            return (
+                                <Card key={index} className="mb-3">
+                                    <Card.Header as="h2">Project: {key}</Card.Header>
+                                    <Card.Body>
+                                        <Card.Text>Hours Worked: {totalHours}</Card.Text>
+                                    </Card.Body>
+                                </Card>
+                            );
+                        })}
+                    </Col>
+                </Row>
+            </Container>
         </div>
     );
 }
