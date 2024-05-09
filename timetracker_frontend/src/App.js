@@ -8,7 +8,7 @@ import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 // axois configuration
 axios.defaults.xsrfCookieName = 'csrftoken';
@@ -125,8 +125,12 @@ function App() {
         'X-CSRFToken': csrftoken
       }
     }).then(function (res) {
+      if (res.data) {
       localStorage.setItem('token', res.data.token);
       setCurrentUser(true);
+    }else{
+      alert('Invalid credentials');
+    }
     }).catch(function (error) {
       alert('Invalid credentials');
     })
@@ -156,6 +160,12 @@ function App() {
   }
 
   // If the user is logged in, display the logged in page
+
+/*            <Navbar.Text style={{ padding: '1rem' }}>
+                <Link to="/weekly-report" className="btn btn-dark">Weekly Report</Link> 
+              </Navbar.Text>
+*/
+  
   if (currentUser) {
     return (
       <div>
@@ -164,9 +174,6 @@ function App() {
             <Navbar.Brand>TimeTracker App</Navbar.Brand>
             <Navbar.Toggle />
             <Navbar.Collapse className="justify-content-end">
-              <Navbar.Text style={{ padding: '1rem' }}>
-                <Link to="/weekly-report" className="btn btn-dark">Weekly Report</Link>
-              </Navbar.Text>
               <Navbar.Text>
                 <Form onSubmit={e => submitLogout(e)}>
                   <Button type="submit" variant="dark">Log out</Button>
