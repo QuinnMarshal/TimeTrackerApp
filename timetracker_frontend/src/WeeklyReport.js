@@ -70,6 +70,29 @@ function WeeklyReport() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [timeEntries, lastProcessedIndex, calculateNewState]);
 
+    // Save the projectEntries, projectHours, and lastProcessedIndex states to localStorage
+    useEffect(() => {
+        console.log('projectEntries:', projectEntries);
+        console.log('projectHours:', projectHours);
+        console.log('lastProcessedIndex:', lastProcessedIndex);
+
+        localStorage.setItem('projectEntries', JSON.stringify(projectEntries));
+        localStorage.setItem('projectHours', JSON.stringify(projectHours));
+        localStorage.setItem('lastProcessedIndex', JSON.stringify(lastProcessedIndex));
+    }, [projectEntries, projectHours, lastProcessedIndex]);
+
+    // Group the time entries by project
+    // This will allow us to display the time entries by project
+    const groupedEntries = timeEntries.reduce((grouped, entry) => {
+        const key = entry.project;
+        if (grouped[key]) {
+            grouped[key].push(entry);
+        } else {
+            grouped[key] = [entry];
+        }
+        return grouped;
+    }, {});
+
     return (
         <div>
             <Navbar bg="dark" data-bs-theme="dark">
