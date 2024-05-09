@@ -6,19 +6,19 @@ from django.utils import timezone
 # AppUserManager and AppUser classes are created to override the default User model of Django
 # AppUserManager class is created to manage the creation of users
 class AppUserManager(BaseUserManager):
-    def create_user(self, email, password=None):
+    def create_user(self, email, username, password=None):
         if not email:
             raise ValueError("The Email field must be set")
         if not password:
             raise ValueError("The Password field must be set")
         email = self.normalize_email(email)
-        user = self.model(email=email)
+        user = self.model(email=email, username=username)
         user.set_password(password)
         user.save()
         return user
     
-    def create_superuser(self, email, password=None):
-        user = self.create_user(email, password)
+    def create_superuser(self, email, username, password=None):
+        user = self.create_user(email, username, password)
         user.is_superuser = True
         user.save()
         return user
