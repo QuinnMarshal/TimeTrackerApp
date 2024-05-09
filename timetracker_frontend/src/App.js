@@ -13,7 +13,7 @@ import Row from 'react-bootstrap/Row';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { TimeEntryContext } from './TimeEntryContext';
 import { useContext } from 'react';
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 // axois configuration
 axios.defaults.xsrfCookieName = 'csrftoken';
@@ -248,6 +248,9 @@ function App() {
             <Navbar.Brand>TimeTracker App</Navbar.Brand>
             <Navbar.Toggle />
             <Navbar.Collapse className="justify-content-end">
+              <Navbar.Text style={{ padding: '1rem' }}>
+                  <Link to="/weekly-report" className="btn btn-dark">Weekly Report</Link> 
+                </Navbar.Text>
               <Navbar.Text>
                 <Form onSubmit={e => submitLogout(e)}>
                   <Button type="submit" variant="dark">Log out</Button>
