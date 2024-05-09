@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
+from .models import TimeEntry, AppUser
 
 # The get_user_model() function returns the user model that is active in the current project
 UserModel = get_user_model()
@@ -44,3 +45,11 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
         fields = ["user_id", "email", "username"]
+        
+# TimeEntrySerializer class is created to serialize the time entry data
+# The user field is set to PrimaryKeyRelatedField to get the user data
+class TimeEntrySerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=AppUser.objects.all(), required=False)
+    class Meta:
+        model = TimeEntry
+        fields = ['user', 'project', 'time_entry_id', 'hours_worked', 'description', 'entry_timestamp']
