@@ -31,12 +31,14 @@ const loginClient = axios.create({
 
 function App() {
 
+  // Set up the state variables
   const [currentUser, setCurrentUser] = useState(false);
   const [registrationToggle, setRegistrationToggle] = useState(false);
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  // useEffect hook to check if the user is logged in
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -49,6 +51,8 @@ function App() {
     }
   }, []);
 
+  // Function to submit the registration form
+  // This function will send a POST request to the registration endpoint to create a new user
   function submitRegistration(e) {
     e.preventDefault();
 
@@ -75,7 +79,7 @@ function App() {
         localStorage.setItem('token', res.data.token);
         setCurrentUser(true);
       })
-    }).catch(function (error) {
+    }).catch(function (error) { // Handle user errors 
       if (email === '' || username === '' || password === '') {
         alert('Please fill in all fields');
       } else if (password.length < 8) {
@@ -88,6 +92,7 @@ function App() {
     })
   }
 
+  // Function to get the CSRF token from the cookie
   function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -103,9 +108,12 @@ function App() {
     return cookieValue;
   }
 
+  // Function to submit the login form
+  // This function will send a POST request to the login endpoint to log in the user
   function submitLogin(e) {
     e.preventDefault();
 
+    // Get the CSRF token from the cookie
     const csrftoken = getCookie('csrftoken');
 
     loginClient.post('/accounts/login/', {
@@ -124,10 +132,12 @@ function App() {
     })
   }
 
+  // Function to submit the logout form
+  // This function will send a POST request to the logout endpoint to log out the user
   function submitLogout(e) {
     e.preventDefault();
     const token = localStorage.getItem('token');
-    const csrftoken = getCookie('csrftoken');  // Get CSRF token from cookie
+    const csrftoken = getCookie('csrftoken');
     client.post('/accounts/logout/', {}, {
       headers: {
         Authorization: `Token ${token}`,
@@ -135,17 +145,18 @@ function App() {
       }
     }).then(function (res) {
       localStorage.removeItem('token');
-      localStorage.removeItem('timeEntries');
+      //localStorage.removeItem('timeEntries');
       setCurrentUser(false);
     })
   }
 
+  // Function to update the form button
   function update_form_btn() {
     setRegistrationToggle(!registrationToggle);
   }
 
+  // If the user is logged in, display the logged in page
   if (currentUser) {
-
     return (
       <div>
         <Navbar bg="dark" data-bs-theme="dark">
@@ -170,6 +181,7 @@ function App() {
       </div>
     );
   }
+  // If the user is not logged in, display the login/registration page
   return (
     <div>
       <Navbar bg="dark" data-bs-theme="dark">
