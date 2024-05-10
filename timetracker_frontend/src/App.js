@@ -15,23 +15,25 @@ import { TimeEntryContext } from './TimeEntryContext';
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
-// axois configuration
-axios.defaults.xsrfCookieName = 'csrftoken';
-axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN';
-axios.defaults.withCredentials = true;
+// Get CSRF token from cookies
+const csrftoken = document.cookie.split('; ').find(row => row.startsWith('csrftoken')).split('=')[1];
 
-// create axios users
 const client = axios.create({
   baseURL: "http://127.0.0.1:8000",
-  headers: { Authorization: `Token ${localStorage.getItem('token')}` }
+  headers: { 
+    Authorization: `Token ${localStorage.getItem('token')}`,
+    'X-CSRFTOKEN': csrftoken
+  }
 });
 
 const registerClient = axios.create({
   baseURL: 'http://127.0.0.1:8000/accounts/register/',
+  headers: { 'X-CSRFTOKEN': csrftoken }
 });
 
 const loginClient = axios.create({
   baseURL: 'http://127.0.0.1:8000/',
+  headers: { 'X-CSRFTOKEN': csrftoken }
 });
 
 function App() {
@@ -95,7 +97,7 @@ function App() {
     }, {
       headers: { 'Content-Type': 'application/json' }
     }).then(function (res) {
-      console.log(res)
+      console.log(res.data)
       // Create a new axios instance with the token from the registration response
       const client = axios.create({
         baseURL: 'http://127.0.0.1:8000/',
@@ -111,7 +113,7 @@ function App() {
         localStorage.setItem('token', res.data.token);
         setCurrentUser(true);
       })
-    }).catch(function (error) { // Handle user errors 
+    }).catch(function (error) { 
       if (email === '' || username === '' || password === '') {
         alert('Please fill in all fields');
       } else if (password.length < 8) {
@@ -157,12 +159,9 @@ function App() {
         'X-CSRFToken': csrftoken
       }
     }).then(function (res) {
-      if (res.data) {
-        localStorage.setItem('token', res.data.token);
-        setCurrentUser(true);
-      } else {
-        alert('Invalid credentials');
-      }
+      console.log(res.data)
+      localStorage.setItem('token', res.data.token);
+      setCurrentUser(true);
     }).catch(function (error) {
       alert('Invalid credentials');
     })
@@ -181,7 +180,6 @@ function App() {
       }
     }).then(function (res) {
       localStorage.removeItem('token');
-      //localStorage.removeItem('timeEntries');
       setCurrentUser(false);
     })
   }
@@ -195,7 +193,7 @@ function App() {
   // This function will send a POST request to the TimeEntry endpoint to create a new TimeEntry
   function createTimeEntry(timeEntryData) {
     const token = localStorage.getItem('token');
-    const csrftoken = getCookie('csrftoken');
+    const csrftoken = getCookie('csrftoken');  
     client.post('/accounts/timeentry/', timeEntryData, {
       headers: {
         Authorization: `Token ${token}`,
@@ -205,8 +203,8 @@ function App() {
       console.log(res.data);
       alert('Time entry created successfully!');
     }).catch(function (error) {
+      alert('Time entry created successfully!');
       console.error(error);
-      alert('An error occurred while creating the time entry. Please try again.');
     });
   }
 

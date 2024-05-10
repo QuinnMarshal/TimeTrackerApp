@@ -8,11 +8,13 @@ import { TimeEntryContext } from './TimeEntryContext';
 import { useState } from 'react';
 import WeeklyReport from './WeeklyReport';
 
+const root = ReactDOM.createRoot(document.getElementById('root'));
 
-const Main = React.memo(function Main() {
+function Main() {
 
   console.log('Main rendered');
   const [timeEntries, setTimeEntries] = useState([]);
+
 
   return (
     <React.StrictMode>
@@ -26,9 +28,9 @@ const Main = React.memo(function Main() {
       </Router>
     </React.StrictMode>
   );
-});
+}
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+
 root.render(<Main />);
 
 
